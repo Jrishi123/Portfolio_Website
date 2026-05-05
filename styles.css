@@ -31,6 +31,27 @@ body {
   overflow-x: hidden;
 }
 
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.22), rgba(34, 197, 94, 0.08) 38%, transparent 68%);
+  filter: blur(18px);
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0);
+  transition: opacity 180ms ease;
+  mix-blend-mode: screen;
+}
+
+body.has-cursor .cursor-glow {
+  opacity: 1;
+}
+
 body::before {
   position: fixed;
   inset: 0;
@@ -246,21 +267,54 @@ a {
 .skills-grid article,
 .project-card,
 .timeline article {
+  position: relative;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(2, 6, 23, 0.72));
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
+  transform-style: preserve-3d;
   transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.hero-panel div::before,
+.skills-grid article::before,
+.project-card::before,
+.timeline article::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(56, 189, 248, 0.24),
+    transparent 34%
+  );
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.hero-panel div:hover::before,
+.skills-grid article:hover::before,
+.project-card:hover::before,
+.timeline article:hover::before {
+  opacity: 1;
 }
 
 .hero-panel div:hover,
 .skills-grid article:hover,
 .project-card:hover,
 .timeline article:hover {
-  transform: translateY(-4px);
   border-color: rgba(56, 189, 248, 0.5);
   box-shadow: 0 24px 80px rgba(56, 189, 248, 0.12);
+}
+
+.hero-panel div > *,
+.skills-grid article > *,
+.project-card > *,
+.timeline article > * {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-panel div {
@@ -455,6 +509,12 @@ footer p {
     right: -120px;
     top: 18px;
     width: 300px;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-glow {
+    display: none;
   }
 }
 
